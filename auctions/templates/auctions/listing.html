@@ -1,0 +1,34 @@
+{% extends 'auctions/layout.html' %}
+{% block body %}
+    <div>
+        <h2>Listing: {{ listing.title }}</h2>
+        {% if listing.image %}
+            <img src="{{ listing.image.url }}">
+        {% else %}
+        {% endif %}
+        <p>{{ listing.description }}</p>
+        <a href="{% url 'watchlist' listing.id %}">Add to watchlist</a>
+        {% if listing.close_bid == False %}
+            <form method="post" action="">
+                {% csrf_token %}
+                <h2>${{ listing.prices }} last bid placed by {{ listing.bid_author }}</h2>
+                <input type="number" name="bid" placeholder="Bid">
+                <input type="submit" value="Place Bid">
+                {% if listing.creator == request.user %}
+                    <a href="{% url 'close' listing.id %}">Close this bid</a>
+                {% endif %}
+            </form>
+        {% else %}
+            {% if listing.bid_author == request.user.username %}
+                <h2>You have won bid!</h2>
+            {% else %}
+                <h2>{{ listing.bid_author }} has won bid!</h2>
+            {% endif %}
+        {% endif %}
+        <h2>Details</h2>
+        <ul>
+            <p>Listed by: {{ listing.creator }}</p>
+            <p>Category:</p>
+        </ul>
+    </div>
+{% endblock %}

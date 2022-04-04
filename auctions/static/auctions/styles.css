@@ -1,0 +1,59 @@
+body {
+    padding: 10px;
+}
+
+.l-1{
+    display: block;
+}
+
+.i-1 {
+    margin-top: 20px;
+    margin-left: 50px;
+}
+
+.container {
+    height: 150px;
+    border: 1px solid grey;
+    display: flex;
+    margin-left: 20px;
+}
+
+.container-1 {
+ width: 150px;
+ height: 130px;
+ float: left;
+ margin-top: 10px;
+ display: flex;
+}
+
+.container-2 {
+ height: 100%;
+ width: auto;
+ margin-left: 20px;
+ margin-top: 15px;
+ font-size: 15px;
+}
+
+.container-2 p {
+ margin-top: -10px;
+}
+
+.desc {
+ font-size: 12px;
+}
+
+.created {
+ font-size: 10px;
+}
+
+
+
+.img-1 {
+    width: 100%;
+    height: auto;
+    justify-content: center;
+}
+
+.container {
+    margin-top: 20px;
+}
