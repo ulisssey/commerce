@@ -14,6 +14,11 @@ def index(request):
     return render(request, "auctions/index.html", {'listings': listings})
 
 
+def closed_listings(request):
+    listings = AuctionListings.objects.filter(close_bid=True).order_by('-created')
+    return render(request, "auctions/index.html", {'listings': listings})
+
+
 def login_view(request):
     if request.method == "POST":
 
@@ -98,6 +103,18 @@ def get_comment(request, pk):
             return redirect('listing', pk)
 
 
+def delete_comment(request, pk):
+    comment = Comments.objects.get(id=pk)
+    comment.delete()
+    return redirect(request.META['HTTP_REFERER'])
+
+
+def delete_listing(request, pk):
+    listing = AuctionListings.objects.get(id=pk)
+    listing.delete()
+    return redirect('index')
+
+
 @login_required(login_url='login')
 def get_bid(request, pk):
     listing = AuctionListings.objects.get(id=pk)
@@ -159,3 +176,15 @@ def user_watchlist(request):
         for i in watchlist:
             listings.append(AuctionListings.objects.get(id=i))
         return render(request, 'auctions/watchlist.html', {'listings': listings})
+
+
+@login_required(login_url='login')
+def categories_page(request):
+    categories = Categories.objects.all()
+    return render(request, 'auctions/categories.html', {'categories': categories})
+
+
+@login_required(login_url='login')
+def category_page(request, category):
+    listings = AuctionListings.objects.filter(category__category=category).order_by('-created')
+    return render(request, 'auctions/category_page.html', {'listings': listings})

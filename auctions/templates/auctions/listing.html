@@ -30,9 +30,12 @@
         {% endif %}
         <h2>Details</h2>
         <ul>
-            <p>Listed by: {{ listing.creator }}</p>
-            <p>Category:</p>
+            <li>Listed by: {{ listing.creator }}</li>
+            <li>Category: {{ listing.category }}</li>
         </ul>
+        {% if listing.creator == request.user %}
+            <a href="{% url 'delete-listing' listing.id %}">Delete listing</a>
+        {% endif %}
         <hr>
         <div>
             <form method="post" action="{% url 'comment' listing.id %}">
@@ -48,6 +51,9 @@
                     <p>@{{ comment.author }}</p>
                     <p>{{ comment.body }}</p>
                     <p>{{ listing.created }}</p>
+                    {% if comment.author == request.user %}
+                    <a href="{% url 'delete-comment' comment.id %}">Delete comment</a>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>

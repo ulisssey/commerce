@@ -9,6 +9,13 @@ class User(AbstractUser):
     watchlist = models.CharField(max_length=100, null=True, blank=True)
 
 
+class Categories(models.Model):
+    category = models.CharField(max_length=30, null=True, blank=True)
+
+    def __str__(self):
+        return self.category
+
+
 class AuctionListings(models.Model):
     image = models.ImageField(upload_to='images/', blank=True, default='images/0.jpg')
     title = models.CharField(max_length=20)
@@ -17,6 +24,7 @@ class AuctionListings(models.Model):
     creator = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     bid_author = models.CharField(max_length=20, null=True)
     created = models.DateTimeField(auto_now_add=True)
+    category = models.ForeignKey(Categories, on_delete=models.CASCADE, null=True)
     close_bid = models.BooleanField(default=False)
 
 
@@ -30,3 +38,4 @@ class Comments(models.Model):
     body = models.TextField(null=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
+

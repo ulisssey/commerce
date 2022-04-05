@@ -5,7 +5,7 @@ from .models import AuctionListings, Comments
 class ListingForm(ModelForm):
     class Meta:
         model = AuctionListings
-        fields = ['image', 'title', 'description', 'prices']
+        fields = ['image', 'title', 'category', 'description', 'prices']
 
 
 class CommentForm(ModelForm):
