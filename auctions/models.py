@@ -23,3 +23,10 @@ class AuctionListings(models.Model):
 class Bid(models.Model):
     bid = models.DecimalField(max_digits=6, decimal_places=2, null=True)
     listing = models.ForeignKey(AuctionListings, on_delete=models.CASCADE)
+
+
+class Comments(models.Model):
+    listing_id = models.IntegerField(null=True)
+    body = models.TextField(null=True, blank=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)

@@ -7,9 +7,12 @@
         {% else %}
         {% endif %}
         <p>{{ listing.description }}</p>
-        <a href="{% url 'watchlist' listing.id %}">Add to watchlist</a>
         {% if listing.close_bid == False %}
-            <form method="post" action="">
+            <a href="{% url 'watchlist' listing.id %}">Add to watchlist</a>
+        {% else %}
+        {% endif %}
+        {% if listing.close_bid == False %}
+            <form method="post" action="{% url 'get_bid' listing.id %}">
                 {% csrf_token %}
                 <h2>${{ listing.prices }} last bid placed by {{ listing.bid_author }}</h2>
                 <input type="number" name="bid" placeholder="Bid">
@@ -30,5 +33,23 @@
             <p>Listed by: {{ listing.creator }}</p>
             <p>Category:</p>
         </ul>
+        <hr>
+        <div>
+            <form method="post" action="{% url 'comment' listing.id %}">
+                {% csrf_token %}
+                {{ comments_form }}
+                <input type="submit" value="Send">
+            </form>
+        </div>
+        <div>
+            {% for comment in comments %}
+                <hr>
+                <div>
+                    <p>@{{ comment.author }}</p>
+                    <p>{{ comment.body }}</p>
+                    <p>{{ listing.created }}</p>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

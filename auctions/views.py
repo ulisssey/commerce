@@ -1,15 +1,16 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from .models import *
-from .forms import ListingForm
+from .forms import ListingForm, CommentForm
 
 
 def index(request):
-    listings = AuctionListings.objects.all()
+    listings = AuctionListings.objects.filter(close_bid=False)
     return render(request, "auctions/index.html", {'listings': listings})
 
 
@@ -65,6 +66,7 @@ def register(request):
         return render(request, "auctions/register.html")
 
 
+@login_required(login_url='login')
 def create(request):
     form = ListingForm()
     if request.method == "POST":
@@ -79,13 +81,33 @@ def create(request):
 
 def listing_page(request, pk):
     listing = AuctionListings.objects.get(id=pk)
+    comments = Comments.objects.filter(listing_id=pk).order_by('-created')
+    comments_form = CommentForm()
+    context =  {'listing': listing, 'comments_form': comments_form, 'comments': comments}
+    return render(request, 'auctions/listing.html', context)
+
+
+@login_required(login_url='login')
+def get_comment(request, pk):
+    if request.method == 'POST':
+        comments_form = CommentForm(request.POST)
+        if comments_form.is_valid():
+            comments_form.instance.listing_id = pk
+            comments_form.instance.author = request.user
+            comments_form.save()
+            return redirect('listing', pk)
+
+
+@login_required(login_url='login')
+def get_bid(request, pk):
+    listing = AuctionListings.objects.get(id=pk)
     if request.method == 'POST':
         new_bid = request.POST.get('bid')
         if int(new_bid) > listing.prices:
             listing.bid_author = request.user.username
             listing.prices = new_bid
             listing.save()
-    return render(request, 'auctions/listing.html', {'listing': listing})
+            return redirect('listing', pk)
 
 
 def close_bid(request, pk):
@@ -118,6 +140,7 @@ def get_watch_list(request, pk):
         return redirect('listing', pk)
 
 
+@login_required(login_url='login')
 def user_watchlist(request):
     user = User.objects.get(id=request.user.id)
     if user.watchlist is None:
